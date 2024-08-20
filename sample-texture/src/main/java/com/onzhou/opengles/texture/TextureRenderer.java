@@ -15,6 +15,7 @@ import com.onzhou.opengles.utils.ResReadUtils;
 import com.onzhou.opengles.utils.ShaderUtils;
 import com.onzhou.opengles.utils.TextureUtils;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -104,7 +105,7 @@ public class TextureRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         //设置背景颜色
-        GLES30.glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
+        GLES30.glClearColor(0f, 0f, 0f, 1f);
         //编译
         final int vertexShaderId = ShaderUtils.compileVertexShader(ResReadUtils.readResource(R.raw.vertex_texture_shader));
         final int fragmentShaderId = ShaderUtils.compileFragmentShader(ResReadUtils.readResource(R.raw.fragment_texture_shader));
@@ -114,16 +115,18 @@ public class TextureRenderer implements GLSurfaceView.Renderer {
         uMatrixLocation = GLES30.glGetUniformLocation(mProgram, "u_Matrix");
 
         //加载纹理
-        textureId = TextureUtils.loadTexture(AppCore.getInstance().getContext(), R.drawable.main);
+        textureId = TextureUtils.loadTexture(AppCore.getInstance().getContext(), R.drawable.pic_4k);
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES30.glViewport(0, 0, width, height);
 
-        final float aspectRatio = width > height ?
+         float aspectRatio = width > height ?
                 (float) width / (float) height :
                 (float) height / (float) width;
+
+        aspectRatio = 1.25f;
         if (width > height) {
             //横屏
             Matrix.orthoM(mMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
@@ -157,4 +160,5 @@ public class TextureRenderer implements GLSurfaceView.Renderer {
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, VERTEX_INDEX.length, GLES20.GL_UNSIGNED_SHORT, mVertexIndexBuffer);
 
     }
+
 }
